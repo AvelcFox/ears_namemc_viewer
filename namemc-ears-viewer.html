@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NameMC Skin Viewer + Ears Mod Integration</title>
+  <style>
+    :root {
+      --bg: #12161a;
+      --card-bg: #1b2228;
+      --text: #e1e7ed;
+      --text-muted: #8b9bb4;
+      --accent: #2e86de;
+      --badge-ears: #9b59b6;
+      --border: #2a3540;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+    .main-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+      max-width: 900px;
+      width: 100%;
+    }
+    .viewer-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .badge-container {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      display: flex;
+      gap: 8px;
+    }
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-ears {
+      background: #712b9e;
+      color: #f5e6ff;
+      border: 1px solid #a855f7;
+    }
+    .badge-vanilla {
+      background: #23405c;
+      color: #93c5fd;
+    }
+    canvas#skin-canvas {
+      width: 240px;
+      height: 380px;
+      cursor: grab;
+      image-rendering: pixelated;
+    }
+    canvas#skin-canvas:active {
+      cursor: grabbing;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      width: 100%;
+    }
+    button, input[type="text"], select {
+      background: #25313d;
+      color: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    button {
+      cursor: pointer;
+      font-weight: 500;
+    }
+    button:hover {
+      background: #324353;
+      border-color: #4a5d70;
+    }
+    button.primary {
+      background: var(--accent);
+      border-color: #409eff;
+    }
+    button.primary:hover {
+      background: #1b6ec2;
+    }
+    .sidebar {
+      flex: 1;
+      min-width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+    .panel h2 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .info-label {
+      color: var(--text-muted);
+    }
+    .info-value {
+      font-weight: 500;
+      font-family: monospace;
+    }
+    .ears-detected-box {
+      background: rgba(168, 85, 247, 0.12);
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    /* Hidden dummy elements needed by ears-common.js */
+    .ears-dummies {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>NameMC 3D Skin Engine + Ears Mod</h1>
+    <div class="subtitle">Демонстрация интеграции движка NameMC с авто-распознаванием мода Ears (на примере скина Avellc)</div>
+  </header>
+
+  <div class="main-container">
+    <div class="viewer-card">
+      <div class="badge-container">
+        <span id="ears-badge" class="badge badge-ears">Ears Mod Active</span>
+        <span id="model-badge" class="badge badge-vanilla">Slim (Alex)</span>
+      </div>
+      <canvas id="skin-canvas"></canvas>
+      <div class="controls">
+        <button id="btn-play" class="primary" style="flex:1;">Пауза анимации</button>
+        <button id="btn-reset" style="flex:1;">Сброс камеры</button>
+      </div>
+      <div class="toggle-row" style="width: 100%; margin-top: 12px;">
+        <label for="toggle-ears" style="cursor:pointer;">Включить отображение Ears:</label>
+        <input type="checkbox" id="toggle-ears" checked style="cursor:pointer; width:18px; height:18px;">
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="panel">
+        <h2>Загрузка скина</h2>
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+          <input type="text" id="input-username" value="Avellc" placeholder="Ник игрока" style="flex: 1;">
+          <button id="btn-load-user">Загрузить</button>
+        </div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Или загрузите файл скина:</div>
+        <input type="file" id="input-file" accept="image/png" style="width: 100%; font-size: 12px;">
+      </div>
+
+      <div class="panel">
+        <h2>Анализ скина</h2>
+        <div class="info-row">
+          <span class="info-label">Текущий скин:</span>
+          <span id="info-username" class="info-value">Avellc</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Пиксель (0, 32):</span>
+          <span id="info-pixel" class="info-value">#3F23D8 (Magic Blue)</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Статус Ears:</span>
+          <span id="info-ears-status" class="info-value" style="color: #c084fc;">Обнаружен</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Объектов Ears в 3D:</span>
+          <span id="info-quads-count" class="info-value">26 элементов</span>
+        </div>
+
+        <div id="ears-details" class="ears-detected-box">
+          ✨ <b>Ears распознан автоматически!</b><br>
+          Декодированные элементы скина:
+          <ul id="ears-features-list" style="padding-left: 20px; margin-top: 6px;">
+            <li>Уши (Ears: Cat / Around)</li>
+            <li>Мордочка (Snout: 4x2x2)</li>
+            <li>Крылья (Wings: Symmetric Single)</li>
+            <li style="color: var(--text-muted);">Хвост: отключён (Tail: None)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+        💡 <b>Как это работает в движке NameMC:</b><br>
+        При загрузке скина считывается цвет пикселя <code>(0, 32)</code>. Если это <code>#3F23D8</code> (Magic Blue) или <code>#EA2101</code> (Alfalfa), запускается декодер геометрии Ears и автоматически привязывает меши к костям (голова, туловище, конечности). В анимации походки они двигаются синхронно с телом.
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden elements for ears-common runtime -->
+  <div class="ears-dummies">
+    <canvas id="skin" width="64" height="64"></canvas>
+    <canvas id="wings" width="20" height="16"></canvas>
+    <canvas id="cape" width="20" height="16"></canvas>
+    <input type="checkbox" id="slim-enabled" checked>
+    <input type="checkbox" id="torso2-enabled" checked>
+  </div>
+
+  <script src="three.min.js"></script>
+  <script src="WebGL.js"></script>
+  <script src="ears-common.js"></script>
+  <script src="namemc-renderer.js"></script>
+  <script src="namemc-ears-adapter.js"></script>
+</body>
+</html>
