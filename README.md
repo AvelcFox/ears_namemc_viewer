@@ -46,7 +46,7 @@ This repository demonstrates how NameMC can support Ears **natively, client-side
 ## 🚀 Live Demo
 
 You can test this live on GitHub Pages:
-> **`https://<your-username>.github.io/<repo-name>/`**
+> **https://avelcfox.github.io/ears_namemc_viewer/**
 
 ### Running Locally
 
