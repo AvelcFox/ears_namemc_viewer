@@ -2,7 +2,12 @@
 
 A working proof-of-concept integrating the **NameMC 3D skin rendering engine** with automatic client-side support for the **[Ears mod](https://github.com/unascribed/Ears)** (faithful custom ears, tails, snouts, wings, horns, and claws encoded directly in Minecraft skin pixels).
 
-![NameMC with Ears Mod Showcase](screenshots/namemc_ears_showcase.png)
+---
+
+## 🚀 Live Demo
+
+Try the interactive 3D viewer directly in your browser:
+> **https://avelcfox.github.io/ears_namemc_viewer/**
 
 ---
 
@@ -33,22 +38,7 @@ This repository demonstrates how NameMC can support Ears **natively, client-side
 
 ---
 
-## 📸 3D Angles Comparison (Avellc Skin)
-
-![Ears 3D Angles Comparison](screenshots/avellc_angles_comparison.png)
-
-1. **Front View:** Cat ears extending above vanilla head geometry + 4×2×2 protruding snout.
-2. **Back View:** Folded single symmetric wing (20×16 texture extracted dynamically from the skin's Alfalfa data block) + ears from behind.
-3. **Tail Demo:** Demonstrates animated tail geometry attached to the torso when `tail-mode` is activated.
-
----
-
-## 🚀 Live Demo
-
-You can test this live on GitHub Pages:
-> **https://avelcfox.github.io/ears_namemc_viewer/**
-
-### Running Locally
+## 🛠️ Running Locally
 
 Clone this repository and serve with any static web server:
 
